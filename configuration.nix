@@ -14,7 +14,17 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   # Ensure newer kernel is used
+  # TODO specify specific version here
   boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  boot.initrd.luks.devices = [
+    {
+      name = "root";
+      device = "/dev/disk/by-uuid/89837505-c7ef-45cb-88ce-c0587e9f0ca2 ";
+      preLVM = true;
+      allowDiscards = true;
+    }
+  ];
 
   # Hostname
   networking.hostName = "silvus-laptop";
