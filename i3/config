@@ -137,6 +137,42 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+
+set $mode_system System (l)ock log(o)ut (s)uspend (h)ibernate (S)hutdown (r)eboot
+set $mode_logout Logout: Return
+set $mode_shutdown Shutdown: Return
+set $mode_reboot Reboot: Return
+
+
+
+mode "$mode_system" {
+	bindsym l exec --no-startup-id i3lock -c 222733, mode "default"
+	bindsym s exec --no-startup-id systemctl suspend, mode "default"
+	bindsym h exec --no-startup-id systemctl hibernate, mode "default"
+	bindsym o mode "$mode_logout"
+	bindsym Shift+s mode "$mode_shutdown"
+	bindsym r mode "$mode_reboot"
+
+	bindsym Return mode "default"
+	bindsym Escape mode "default"
+	bindsym $mod+p mode "default"
+}
+bindsym $mod+p mode "$mode_system"
+
+mode "$mode_logout" {
+	bindsym Return exit
+	bindsym Escape mode "default"
+}
+mode "$mode_shutdown" {
+	bindsym Return exec shutdown -h now
+	bindsym Escape mode "default"
+}
+mode "$mode_reboot" {
+	bindsym Return exec reboot
+	bindsym Escape mode "default"
+}
+
+
 # Pulse Audio controls
 bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -q set Master 5%+
 bindsym XF86AudioLowerVolume exec --no-startup-id amixer -q set Master 5%-
