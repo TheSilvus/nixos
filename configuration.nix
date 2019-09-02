@@ -26,6 +26,15 @@
     }
   ];
 
+  
+  nixpkgs.config.packageOverrides = super: {
+    cryptsetup = (super.cryptsetup.overrideAttrs (old: rec {configureFlags = [
+      "--enable-cryptsetup-reencrypt"
+      "--with-crypto_backend=openssl"
+      # "--disable-kernel_crypto"
+    ];}));
+  };
+
   # Hostname
   networking.hostName = "silvus-laptop";
   # WiFI configuration
@@ -44,6 +53,12 @@
   # 
   # This is not done deterministically to ensure that the Nixos does not need
   # to be secret.
+  # 
+  # This does require some keys to be set in /etc/wpa_supplicant.conf manually. I have not found a
+  # way to do this automatically.
+  #     ctrl_interface=/run/wpa_supplicant
+  #     ctrl_interface_group=wheel
+  #     update_config=1
   networking.wireless = {
     enable = true;
   };
