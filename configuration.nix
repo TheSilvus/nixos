@@ -150,7 +150,11 @@
     nixpkgs.config.allowUnfree = true;
     # User packages
     home.packages = with pkgs; [
-      firefox vivaldi
+      firefox 
+      # Vivaldi requires proprietary codecs to play some media (e.g. Twitch, 
+      # ...). They have to be installed separately. Vivaldi prints a command to
+      # stdout on startup that can be used for this.
+      vivaldi
       discord spotify
       git
       wget curl
