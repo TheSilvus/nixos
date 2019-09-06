@@ -13,10 +13,12 @@
   # Bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  # Ensure newer kernel is used
-  # TODO specify specific version here
+  # Ensure newest available kernel is used
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  # Allow NTFS mounts
+  boot.supportedFilesystems = [ "ntfs" ];
+  # Ensure LUKS drive works
   boot.initrd.luks.devices = [
     {
       name = "root";
@@ -26,7 +28,18 @@
     }
   ];
 
+  # Mount for shared partition with windows (unencrypted)
+  # Not defined in hardware config because FUSE file systems are not supported
+  # by nixos-generate-config  .
+  fileSystems."/mnt/share" = {
+    device = "/dev/nvme0n1p5";
+    fsType = "ntfs";
+    options = [ "rw" "gid=1" "umask=007" ];
+  };
   
+
+  # A fix for allowing all features of LUKS to work. This is probably not going
+  # to be necessary with 19.09
   nixpkgs.config.packageOverrides = super: {
     cryptsetup = (super.cryptsetup.overrideAttrs (old: rec {configureFlags = [
       "--enable-cryptsetup-reencrypt"
@@ -161,6 +174,7 @@
     ];
   };
 
+  services.tlp.enable = true;
 
 
   # Import user specific configuration
@@ -175,12 +189,15 @@
     nixpkgs.config.allowUnfree = true;
     # User packages
     home.packages = with pkgs; [
-      firefox 
       # Vivaldi requires proprietary codecs to play some media (e.g. Twitch, 
       # ...). They have to be installed separately. Vivaldi prints a command to
       # stdout on startup that can be used for this.
-      vivaldi
+      vivaldi firefox
+
       discord spotify
+
+      zathura
+
       git
       wget curl
       htop
