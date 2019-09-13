@@ -15,6 +15,9 @@
   boot.loader.efi.canTouchEfiVariables = true;
   # Ensure newest available kernel is used
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelParams = [
+    "iommu=soft"
+  ];
 
   # Allow NTFS mounts
   boot.supportedFilesystems = [ "ntfs" ];
@@ -64,8 +67,8 @@
   # > enable_network 0
   # > save_config
   # 
-  # This is not done deterministically to ensure that the Nixos does not need
-  # to be secret.
+  # This is not done deterministically to ensure that the Nixos configuration 
+  # does not need to be # secret.
   # 
   # This does require some keys to be set in /etc/wpa_supplicant.conf manually. I have not found a
   # way to do this automatically.
@@ -185,6 +188,10 @@
       ./termite.nix
       ./vim/vim.nix
     ];
+    # Set environment variables
+    home.sessionVariables = {
+      EDITOR = "vim";
+    };
     # Allow all software to be installed
     nixpkgs.config.allowUnfree = true;
     # User packages
@@ -201,6 +208,8 @@
       git
       wget curl
       htop
+
+      usbutils pciutils
     ];
   };
 }
