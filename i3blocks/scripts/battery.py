@@ -38,5 +38,5 @@ if time:
 else:
     print(f"BAT {percentage}% {state}")
 
-if percentage < 20:
+if percentage < 20 and state != "CHA":
     sys.exit(33)

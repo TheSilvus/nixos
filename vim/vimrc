@@ -13,7 +13,14 @@ call plug#begin('~/.vim/plugged')
 	Plug 'tpope/vim-fugitive'
 
 	" File management
-	Plug 'Yggdroot/LeaderF' " , { 'do': './install.sh' } Cannot enable this; building in NixOS is apparently weird
+	Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+
+	" Snippets
+	Plug 'SirVer/ultisnips'
+
+	" Languages
+	Plug 'lervag/vimtex'
+	Plug 'KeitaNakamura/tex-conceal.vim'
 call plug#end()
 
 " --- Vim
@@ -24,57 +31,42 @@ set number relativenumber
 " Escape timeout length
 set timeoutlen=200
 
-" Allow to change away from unsaved buffer
+" Allow to switch away from unsaved buffer
 set hidden
 
 " Buffer switch mappings
 nnoremap <BS> :b #<CR>
-nnoremap <C-q> :bp<CR>
-nnoremap <C-e> :bn<CR>
+nnoremap <C-d> :bp<CR>
+nnoremap <C-a> :bn<CR>
 
-" Tab settings
+" Leaders
+let mapleader=','
+let maplocalleader=','
+
+
+
+" Tab settings:
+" Use 'real' tabs with size 4, treat consecutive spaces like tabs for deletion
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
 set noexpandtab
 
+set listchars=tab:>~ list
+
 " Cursor distance from edge
 set scrolloff=10
 
 " Line length and paragraph formatting
-set textwidth=100
+set textwidth=80
 set formatoptions=rq
 
 " Colorscheme
 colorscheme nord
 
+" Backspace
 
-" Command command
-
-function ExecuteCommand(command)
-	enew
-
-	setlocal buftype=nofile bufhidden=hide noswapfile
-
-	if !bufexists(a:command)
-		" Reset main filename to overwrite it
-		silent 0file
-		silent execute 'file' a:command
-	else
-		" TODO open with alternate name
-		echoerr 'Command buffer still open'
-		bdelete
-		return
-	endif
-
-	" TODO execute async?
-    silent execute '%!' a:command
-
-	return
-endfunction
-
-command -nargs=* Exec :call ExecuteCommand('<args>')
-command -nargs=* E :Exec <args>
+set backspace=indent,eol,start
 
 
 " --- Buftabline
@@ -86,17 +78,37 @@ let g:buftabline_indicators = 1
 
 set laststatus=2
 let g:lightline = {
-            \ 'colorscheme': 'wombat',
-            \ 'active': {
-            \   'left': [['mode', 'paste'], ['readonly', 'filename', 'modified']],
-            \   'right': [['lineinfo', 'percent'], ['fileformat', 'fileencoding', 'filetype'], ['gitbranch']],
-            \ },
-            \ 'component_function': {
-            \   'gitbranch': 'fugitive#head',
-            \ },
-            \ }
+		\ 'colorscheme': 'wombat',
+		\ 'active': {
+			\ 'left': [['mode', 'paste'], ['readonly', 'filename', 'modified']],
+			\ 'right': [
+				\ ['lineinfo', 'percent'],
+				\ ['fileformat', 'fileencoding', 'filetype'],
+				\ ['gitbranch']
+			\ ],
+		\ },
+		\ 'component_function': {
+			\ 'gitbranch': 'fugitive#head',
+		\ },
+	\ }
 
 " --- LeaderF
 
 nnoremap <C-p> :Leaderf file <CR>
 nnoremap <C-t> :Leaderf tag <CR>
+
+" --- Ultisnips
+
+let g:UltiSnipsExpandTrigger = '<tab>'
+let g:UltiSnipsJumpForwardTrigger = '<tab>'
+let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
+
+let g:UltiSnipsSnippetsDir = 'UltiSnips'
+
+" --- Vimtex
+
+let g:tex_flavor='latex'
+let g:vimtex_view_method='zathura'
+let g:vimtex_quickfix_mode=0
+let conceallevel=2
+let g:tex_conceal='abdmg'

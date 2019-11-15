@@ -25,7 +25,7 @@
   boot.initrd.luks.devices = [
     {
       name = "root";
-      device = "/dev/disk/by-uuid/89837505-c7ef-45cb-88ce-c0587e9f0ca2 ";
+      device = "/dev/disk/by-uuid/6899bf49-211a-458b-8674-8b0ef0013757";
       preLVM = true;
       allowDiscards = true;
     }
@@ -39,17 +39,7 @@
     fsType = "ntfs";
     options = [ "rw" "gid=1" "umask=007" ];
   };
-  
 
-  # A fix for allowing all features of LUKS to work. This is probably not going
-  # to be necessary with 19.09
-  nixpkgs.config.packageOverrides = super: {
-    cryptsetup = (super.cryptsetup.overrideAttrs (old: rec {configureFlags = [
-      "--enable-cryptsetup-reencrypt"
-      "--with-crypto_backend=openssl"
-      # "--disable-kernel_crypto"
-    ];}));
-  };
 
   # Hostname
   networking.hostName = "silvus-laptop";
@@ -106,6 +96,9 @@
   users.groups.silvus = {};
 
 
+  # Printing service (CUPS)
+  services.printing.enable = true;
+
   # XServer config
   services.xserver = {
     enable = true;
@@ -147,6 +140,12 @@
     displayManager.lightdm.enable = true;
     windowManager.i3.enable = true;
     windowManager.i3.package = pkgs.i3-gaps;
+
+    # desktopManager = {
+    #   default = "plasma5";
+    #   xterm.enable = false;
+    #   plasma5.enable = true;
+    # };
   };
 
   # Required for brightness control
@@ -199,9 +198,9 @@
       # Vivaldi requires proprietary codecs to play some media (e.g. Twitch, 
       # ...). They have to be installed separately. Vivaldi prints a command to
       # stdout on startup that can be used for this.
-      vivaldi firefox
+      vivaldi firefox opera google-chrome
 
-      discord spotify
+      discord tdesktop spotify
 
       zathura
 
@@ -209,7 +208,10 @@
       wget curl
       htop
 
+      lm_sensors
       usbutils pciutils
+
+      unzip
     ];
   };
 }

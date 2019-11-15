@@ -7,4 +7,5 @@
   ];
 
   home.file.".vimrc".source = ./vimrc;
+  home.file.".vim/UltiSnips".source = ./snippets;
 }
