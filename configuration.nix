@@ -16,8 +16,9 @@
   # Ensure newest available kernel is used
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.kernelParams = [
-    "iommu=soft"
+    # "amd_iommu=off"
   ];
+  boot.initrd.availableKernelModules = [ "uas " ];
 
   # Allow NTFS mounts
   boot.supportedFilesystems = [ "ntfs" ];
@@ -30,6 +31,8 @@
       allowDiscards = true;
     }
   ];
+  hardware.enableRedistributableFirmware = true;
+
 
   # Mount for shared partition with windows (unencrypted)
   # Not defined in hardware config because FUSE file systems are not supported
